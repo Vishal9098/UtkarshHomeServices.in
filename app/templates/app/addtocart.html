@@ -3,7 +3,7 @@
 {% block main-content %}
 
 <div class="container my-5">
-  <h2 class="text-center mb-4">Shopping Cart</h2>
+  <h2 class="text-center mb-4">Selected Services</h2>
 
   <div class="row">
 
@@ -37,32 +37,12 @@
                   </p>
                 {% endif %}
 
-                <!-- QUANTITY -->
+                <!-- QUANTITY (NO + - BUTTONS) -->
                 <div class="my-2">
                   <strong>Quantity:</strong>
-
-                  {% if cart.product.is_service %}
-                    <span class="badge bg-secondary ms-2">
-                      {{ cart.quantity }}
-                    </span>
-                  {% else %}
-                    <div class="d-inline-flex align-items-center gap-2 ms-2">
-
-                      <button type="button"
-                              class="btn btn-sm btn-outline-secondary minus-cart"
-                              data-cart-id="{{ cart.id }}">−</button>
-
-                      <span class="fw-bold"
-                            id="qty-{{ cart.id }}">
-                        {{ cart.quantity }}
-                      </span>
-
-                      <button type="button"
-                              class="btn btn-sm btn-outline-secondary plus-cart"
-                              data-cart-id="{{ cart.id }}">+</button>
-
-                    </div>
-                  {% endif %}
+                  <span class="badge bg-secondary ms-2">
+                    {{ cart.quantity }}
+                  </span>
                 </div>
 
                 <!-- PRICE -->
@@ -80,12 +60,7 @@
                   </strong>
                 </p>
 
-                <!-- REMOVE -->
-                <button type="button"
-                        class="btn btn-sm btn-danger remove-cart"
-                        data-cart-id="{{ cart.id }}">
-                  Remove
-                </button>
+                <!-- REMOVE BUTTON REMOVED -->
 
               </div>
             </div>
@@ -136,45 +111,5 @@
 
   </div>
 </div>
-
-<!-- ================= JS ================= -->
-<script>
-document.addEventListener("click", function(e){
-
-  // PLUS
-  if(e.target.closest(".plus-cart")){
-    const id = e.target.dataset.cartId;
-    fetch(`/pluscart/?cart_id=${id}`)
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById(`qty-${id}`).innerText = data.quantity;
-        location.reload();
-      });
-  }
-
-  // MINUS
-  if(e.target.closest(".minus-cart")){
-    const id = e.target.dataset.cartId;
-    fetch(`/minuscart/?cart_id=${id}`)
-      .then(res => res.json())
-      .then(data => {
-        if(data.removed){
-          location.reload();
-        } else {
-          document.getElementById(`qty-${id}`).innerText = data.quantity;
-          location.reload();
-        }
-      });
-  }
-
-  // REMOVE
-  if(e.target.closest(".remove-cart")){
-    const id = e.target.dataset.cartId;
-    fetch(`/removecart/?cart_id=${id}`)
-      .then(() => location.reload());
-  }
-
-});
-</script>
 
 {% endblock %}

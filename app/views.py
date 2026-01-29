@@ -3,26 +3,18 @@ from django.shortcuts import render,  HttpResponse
 from django.shortcuts import render, redirect
 from django.views import View 
 from .models import ServicePrice
-
 from .models import Customer, Product, Cart, OrderPlaced
-# from .forms import CustomerRegistrationForm, CustomerProfileForm
 from django.contrib import  messages
 from django.db.models import Q
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator  
-from django.shortcuts import render  
-from django.db.models import Q  
-from django.shortcuts import render
-
+from django.utils.decorators import method_decorator    
 from django.shortcuts import render, get_object_or_404
 from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from .models import Product, Cart
 from django.urls import reverse
-from django.shortcuts import render
-from django.db.models import Q
 from .models import Product, Cart
 from django.contrib.auth import authenticate, login
 # from .forms import LoginForm
@@ -35,10 +27,8 @@ class ProductView(View):
   topwears = Product.objects.filter(category='TW')
   bottomwears = Product.objects.filter(category='BW')
   mobiles = Product.objects.filter(category='M')
-
   if request.session.session_key:
     totalitem = Cart.objects.filter(session_key=request.session.session_key).count()
-
   return render(request, 'app/home.html', {
       'topwears':topwears,
       'bottomwears':bottomwears,
@@ -71,9 +61,12 @@ def add_to_cart(request):
         request.session.create()
 
     product = get_object_or_404(Product, id=prod_id)
-    service_price = None
 
-    if price_id:
+    service_price = None
+    if product.is_service:
+        if not price_id:
+            messages.error(request, "Please select a service option")
+            return redirect('product-detail', pk=product.id)
         service_price = get_object_or_404(ServicePrice, id=price_id)
 
     Cart.objects.create(
@@ -83,6 +76,7 @@ def add_to_cart(request):
     )
 
     return redirect("cart")
+
 
 def show_cart(request):
     carts = Cart.objects.filter(session_key=request.session.session_key)
@@ -98,49 +92,23 @@ def show_cart(request):
         'totalamount': totalamount,
     })
 
-def pluscart(request):
-    cart = Cart.objects.get(id=request.GET.get('cart_id'))
-
-    if cart.service_price:
-        return JsonResponse({'quantity': cart.quantity})
-
-    cart.quantity += 1
-    cart.save()
-    return JsonResponse({'quantity': cart.quantity})
 
 
-def minuscart(request):
-    cart = Cart.objects.get(id=request.GET.get('cart_id'))
-
-    if cart.service_price:
-        return JsonResponse({'quantity': cart.quantity})
-
-    if cart.quantity > 1:
-        cart.quantity -= 1
-        cart.save()
-        return JsonResponse({'quantity': cart.quantity})
-    else:
-        cart.delete()
-        return JsonResponse({'removed': True})
-
-
-def removecart(request):
-    Cart.objects.filter(id=request.GET.get('cart_id')).delete()
-    return JsonResponse({'status': 'ok'})
-
-
-
-
-def buy_now(request):
- return render(request, 'app/buynow.html')
-# @login_required
 
 def address(request):  
- totalitem = 0
- if request.user.is_authenticated:
-  totalitem = len(Cart.objects.filter(user=request.user))
- add = Customer.objects.filter(user=request.user)
- return render(request, 'app/address.html', {'add':add,'active':'btn-primary','totalitem':totalitem})
+    totalitem = 0
+    if request.session.session_key:
+        totalitem = Cart.objects.filter(
+            session_key=request.session.session_key
+        ).count()
+
+    add = Customer.objects.all()
+    return render(
+        request,
+        'app/address.html',
+        {'add': add, 'active': 'btn-primary', 'totalitem': totalitem}
+    )
+
 
 def order_place(request):
     carts = Cart.objects.filter(session_key=request.session.session_key)
@@ -164,14 +132,6 @@ def order_place(request):
         c.delete()
 
     return redirect('orders')
-
-
-
-
-
-
-
-
 def checkout(request):
     carts = Cart.objects.filter(session_key=request.session.session_key)
     amount = sum(c.total_price for c in carts)
@@ -180,19 +140,6 @@ def checkout(request):
         'totalamount': amount,
         'carts': carts
     })
-
-
-
-
-
-
-
-
-
-
-
-
-
 def search(request):
     query = request.GET.get('query')
     products = []
@@ -245,12 +192,13 @@ def blogs(request):
 
     return render(request, "app/blogs.html", data)
 
-
-
 def orders(request):
     orders = OrderPlaced.objects.all().order_by('-ordered_at')
     return render(request, 'app/orders.html', {
         'order_placed': orders
     })
+
+
+
 
 
