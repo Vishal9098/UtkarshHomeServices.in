@@ -226,8 +226,13 @@
           <a class="nav-link" href="{% url 'cart' %}">
             <i class="fa-solid fa-cart-shopping"></i>
             Cart
+            {% if totalitem > 0 %}
+            <span class="badge bg-danger ms-1">{{ totalitem }}</span>
+            {% endif %}
           </a>
         </li>
+
+        
         <li class="nav-item">
           <a class="nav-link" href="{% url 'orders' %}">
             My Orders

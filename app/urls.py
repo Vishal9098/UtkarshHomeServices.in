@@ -43,6 +43,8 @@ urlpatterns = [
     # path('accept-order/<int:order_id>/', views.accept_order, name='accept_order'),
     path('cancel-order/<int:order_id>/', views.cancel_order, name='cancel_order'),
     path('accept-order/<int:order_id>/', views.accept_order, name='accept_order'),
+    path('remove-cart/<int:id>/', views.remove_cart, name='remove_cart'),
+
 
 
 

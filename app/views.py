@@ -374,3 +374,16 @@ def cancel_order(request, order_id):
     order.status = 'pending'
     order.save()
     return redirect('orders')
+
+
+from django.shortcuts import redirect, get_object_or_404
+from .models import Cart
+
+
+from django.shortcuts import redirect, get_object_or_404
+from .models import Cart
+
+def remove_cart(request, id):
+    cart = get_object_or_404(Cart, id=id)
+    cart.delete()
+    return redirect('showcart')  # cart page ka view name
