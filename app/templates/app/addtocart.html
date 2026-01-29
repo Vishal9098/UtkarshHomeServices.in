@@ -1,0 +1,180 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block main-content %}
+
+<div class="container my-5">
+  <h2 class="text-center mb-4">Shopping Cart</h2>
+
+  <div class="row">
+
+    <!-- LEFT : CART ITEMS -->
+    <div class="col-md-8">
+
+      {% if carts %}
+        {% for cart in carts %}
+        <div class="card mb-3 shadow-sm">
+          <div class="card-body">
+
+            <div class="row align-items-center">
+
+              <!-- IMAGE -->
+              <div class="col-md-3 text-center">
+                {% if cart.product.product_image %}
+                  <img src="{{ cart.product.product_image.url }}"
+                       class="img-fluid img-thumbnail"
+                       style="max-height:120px;">
+                {% endif %}
+              </div>
+
+              <!-- DETAILS -->
+              <div class="col-md-9">
+
+                <h5 class="mb-1">{{ cart.product.title }}</h5>
+
+                {% if cart.service_price %}
+                  <p class="text-muted mb-1">
+                    {{ cart.service_price.option }}
+                  </p>
+                {% endif %}
+
+                <!-- QUANTITY -->
+                <div class="my-2">
+                  <strong>Quantity:</strong>
+
+                  {% if cart.product.is_service %}
+                    <span class="badge bg-secondary ms-2">
+                      {{ cart.quantity }}
+                    </span>
+                  {% else %}
+                    <div class="d-inline-flex align-items-center gap-2 ms-2">
+
+                      <button type="button"
+                              class="btn btn-sm btn-outline-secondary minus-cart"
+                              data-cart-id="{{ cart.id }}">−</button>
+
+                      <span class="fw-bold"
+                            id="qty-{{ cart.id }}">
+                        {{ cart.quantity }}
+                      </span>
+
+                      <button type="button"
+                              class="btn btn-sm btn-outline-secondary plus-cart"
+                              data-cart-id="{{ cart.id }}">+</button>
+
+                    </div>
+                  {% endif %}
+                </div>
+
+                <!-- PRICE -->
+                <p class="mb-1">
+                  Unit Price:
+                  <strong class="text-success">
+                    ₹ {{ cart.unit_price }}
+                  </strong>
+                </p>
+
+                <p class="mb-2">
+                  Total:
+                  <strong class="text-success">
+                    ₹ {{ cart.total_price }}
+                  </strong>
+                </p>
+
+                <!-- REMOVE -->
+                <button type="button"
+                        class="btn btn-sm btn-danger remove-cart"
+                        data-cart-id="{{ cart.id }}">
+                  Remove
+                </button>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <p class="text-center text-muted">
+          Your cart is empty
+        </p>
+      {% endif %}
+
+    </div>
+
+    <!-- RIGHT : SUMMARY -->
+    <div class="col-md-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+
+          <p>
+            Amount:
+            <strong>₹ {{ amount }}</strong>
+          </p>
+
+          <p>
+            Shipping:
+            <strong>₹ 70</strong>
+          </p>
+
+          <hr>
+
+          <h5>
+            Total Payable:
+            <strong class="text-success">
+              ₹ {{ totalamount }}
+            </strong>
+          </h5>
+
+          <a href="{% url 'checkout' %}"
+             class="btn btn-primary w-100 mt-3">
+            Place Order
+          </a>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= JS ================= -->
+<script>
+document.addEventListener("click", function(e){
+
+  // PLUS
+  if(e.target.closest(".plus-cart")){
+    const id = e.target.dataset.cartId;
+    fetch(`/pluscart/?cart_id=${id}`)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById(`qty-${id}`).innerText = data.quantity;
+        location.reload();
+      });
+  }
+
+  // MINUS
+  if(e.target.closest(".minus-cart")){
+    const id = e.target.dataset.cartId;
+    fetch(`/minuscart/?cart_id=${id}`)
+      .then(res => res.json())
+      .then(data => {
+        if(data.removed){
+          location.reload();
+        } else {
+          document.getElementById(`qty-${id}`).innerText = data.quantity;
+          location.reload();
+        }
+      });
+  }
+
+  // REMOVE
+  if(e.target.closest(".remove-cart")){
+    const id = e.target.dataset.cartId;
+    fetch(`/removecart/?cart_id=${id}`)
+      .then(() => location.reload());
+  }
+
+});
+</script>
+
+{% endblock %}

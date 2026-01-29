@@ -1,0 +1,112 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %}Buy Now{% endblock title %}
+
+{% block main_content %}
+
+<div class="container my-4">
+
+  <div class="row">
+
+    <!-- ================= Sidebar Filter ================= -->
+    <div class="col-12 col-md-3 mb-3">
+
+      <!-- Mobile Filter Button -->
+      <div class="d-md-none mb-3">
+        <button class="btn btn-dark w-100" type="button" data-bs-toggle="collapse" data-bs-target="#mobileFilter">
+          Filter BottomWear
+        </button>
+
+        <div class="collapse mt-2" id="mobileFilter">
+          <div class="list-group shadow-sm rounded">
+            <a href="{% url 'bottomwear'%}" class="list-group-item">All BottomWear</a>
+            <a href="{% url 'bottomweardata' 'nike' %}" class="list-group-item">Nike</a>
+            <a href="{% url 'bottomweardata' 'adidas' %}" class="list-group-item">Adidas</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Desktop Sidebar -->
+      <div class="d-none d-md-block">
+        <div class="list-group shadow-sm rounded">
+          <a href="{% url 'bottomwear'%}" class="list-group-item">All BottomWear</a>
+          <a href="{% url 'bottomweardata' 'nike' %}" class="list-group-item">Nike</a>
+          <a href="{% url 'bottomweardata' 'adidas' %}" class="list-group-item">Adidas</a>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ================= Product Grid ================= -->
+    <div class="col-12 col-md-9">
+      <div class="row g-3">
+
+        {% for product in bottomwears %}
+        <div class="col-6 col-md-4">
+          <a href="{% url 'product-detail' product.id %}" class="text-decoration-none text-dark">
+
+            <div class="product-card h-100">
+              <img src="{{ product.product_image.url }}" class="product-img" alt="{{ product.title }}">
+
+              <div class="p-2 text-center">
+                <div class="fw-semibold small">{{ product.title }}</div>
+
+                <div class="fw-bold text-dark">
+                  Rs. {{ product.discounted_price }}
+                  <small class="text-muted text-decoration-line-through">
+                    {{ product.selling_price }}
+                  </small>
+                </div>
+              </div>
+            </div>
+
+          </a>
+        </div>
+        {% endfor %}
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ================= Mobile Friendly UI CSS ================= -->
+<style>
+
+.product-card{
+  background:#fff;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 4px 10px rgba(0,0,0,0.12);
+  transition:.3s;
+}
+
+.product-card:hover{
+  transform:translateY(-4px);
+}
+
+.product-img{
+  width:100%;
+  height:180px;
+  object-fit:contain;
+  padding:10px;
+}
+
+/* Mobile Optimization */
+@media(max-width:768px){
+
+  .product-img{
+    height:150px;
+  }
+
+  .product-card{
+    border-radius:14px;
+  }
+
+}
+
+</style>
+
+{% endblock main_content %}

@@ -1,0 +1,88 @@
+   <!-- <li><a class="dropdown-item" href="{% url 'laptop' %}">Laptop</a></li> -->
+       <a href="{% url 'laptop' %}" class="list-group-item list-group-item-action">Laptops</a>
+         # path('laptop/<slug:data>', views.laptop, name='laptopdata'),
+           # path('laptop/', views.laptop, name='laptop'),
+    # path('laptop/<slug:data>', views.laptop, name='laptopdata'),
+
+
+
+# def laptop(request, data=None):
+#  if data == None:
+#   laptops = Product.objects.filter(category='L')
+#  elif data == 'Dell' or data == 'HP':
+#   laptops = Product.objects.filter(category='L').filter(brand=data)
+#  return render(request, 'app/laptop.html',{'laptops':laptops})
+
+
+
+def mobile(request, data=None):
+ totalitem = 0
+ if request.user.is_authenticated:
+  totalitem = len(Cart.objects.filter(user=request.user))
+ if data == None:
+  mobiles = Product.objects.filter(category='M')
+ elif data == 'Redmi' or data == 'Samsung':
+  mobiles = Product.objects.filter(category='M').filter(brand=data)
+ elif data == 'below':
+  mobiles = Product.objects.filter(category='M').filter(discounted_price__lt=10000)
+ elif data == 'above':
+  mobiles = Product.objects.filter(category='M').filter(discounted_price__gt=10000)
+ return render(request, 'app/mobile.html',{'mobiles':mobiles,'totalitem':totalitem})
+
+
+path('mobile/', views.mobile, name='mobile'),
+path('mobile/<slug:data>', views.mobile, name='mobiledata'),
+<li><a class="dropdown-item" href="{% url 'mobile' %}">Mobile</a></li>
+<a href="{% url 'mobile' %}" class="list-group-item list-group-item-action">Mobiles</a>
+
+
+
+def topwear(request, data=None):
+ if data == None:
+  topwears = Product.objects.filter(category='TW')
+ elif data == 'nike' or data == 'adidas':
+  topwears = Product.objects.filter(category='TW').filter(brand=data)
+ return render(request, 'app/topwear.html',{'topwears' : topwears})
+
+def bottomwear(request, data=None):
+    if data is None:
+        bottomwears = Product.objects.filter(category='BW')  # Correct variable name
+    elif data in ['nike', 'adidas']:  # Use a list for better readability
+        bottomwears = Product.objects.filter(category='BW', brand=data)  # Assign to bottomwears
+
+    return render(request, 'app/bottomwear.html', {'bottomwears': bottomwears})  # Ensure consistency
+    path('topwear/', views.topwear, name='topwear'), 
+    path('topwear/<slug:data>', views.topwear, name='topweardata'),
+    path('bottomwear/', views.bottomwear, name='bottomwear'),
+    path('bottomwear/<slug:data>', views.bottomwear, name='bottomweardata'),
+  <a href="{% url 'topwear' %}" class="list-group-item list-group-item-action">Top Wear</a>
+  <a href="{% url 'bottomwear' %}" class="list-group-item list-group-item-action">Bottom Wear</a>
+
+    <li><a class="dropdown-item" href="{% url 'topwear' %}">Top Wear</a></li>
+            <li><a class="dropdown-item" href="{% url 'bottomwear' %}">Bottom Wear</a></li>
+
+
+
+
+
+
+
+ path('accounts/login/', auth_views.LoginView.as_view(template_name='app/login.html', authentication_form=LoginForm), name='login'),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

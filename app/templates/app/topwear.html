@@ -1,0 +1,185 @@
+{% extends 'app/base.html' %}
+{% load static %}
+{% block title %}Home{% endblock title %}
+
+{% block banner_slider %}
+<!-- ================= Banner Slider ================= -->
+<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="{% static 'app/images/banner/ak.jpg' %}" class="d-block w-100">
+    </div>
+
+    <div class="carousel-item">
+      <img src="{% static 'app/images/banner/ap.jpg' %}" class="d-block w-100">
+    </div>
+
+    <div class="carousel-item">
+      <img src="{% static 'app/images/banner/aq.jpg' %}" class="d-block w-100">
+    </div>
+
+    <div class="carousel-item">
+      <img src="{% static 'app/images/banner/ak.jpg' %}" class="d-block w-100">
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+
+</div>
+{% endblock banner_slider %}
+
+
+{% block livesale %}
+<div class="container">
+  <div class="row bg-danger text-center p-5 text-white shadow">
+    <h1>SALE IS LIVE NOW</h1>
+    <span>5% Instant Discount on Axis Bank Card</span>
+  </div>
+</div>
+{% endblock livesale %}
+
+
+{% block main_content %}
+
+<!-- ================= Bottom Wears ================= -->
+<div class="m-4">
+  <h2 class="text-center mb-4">Shoppingly Bottom Wears</h2>
+
+  <div class="owl-carousel" id="slider1">
+    {% for b in bottomwears %}
+    <a href="{% url 'product-detail' b.id %}" class="btn">
+      <div class="item product-card">
+        <img src="{{ b.product_image.url }}" class="product-img">
+        <h6>{{ b.title }}</h6>
+        <p>Rs. {{ b.discounted_price }}</p>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+
+
+<!-- ================= Top Wears ================= -->
+<div class="m-4">
+  <h2 class="text-center mb-4">Shoppingly Top Wears</h2>
+
+  <div class="owl-carousel" id="slider2">
+    {% for tp in topwears %}
+    <a href="{% url 'product-detail' tp.id %}" class="btn">
+      <div class="item product-card">
+        <img src="{{ tp.product_image.url }}" class="product-img">
+        <h6>{{ tp.title }}</h6>
+        <p>Rs. {{ tp.discounted_price }}</p>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+
+
+<!-- ================= CSS ================= -->
+<style>
+
+.product-card{
+  background: #f4f4f4;
+  border-radius: 20px;
+  padding: 12px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  transition: 0.3s ease;
+}
+
+.product-card:hover{
+  transform: translateY(-5px);
+}
+
+.product-img{
+  width:100%;
+  height:160px;
+  object-fit:cover;
+  border-radius:16px;
+  margin-bottom:10px;
+}
+
+.product-card h6{
+  font-size:14px;
+  margin-top:6px;
+  color:#333;
+  font-weight:600;
+}
+
+.product-card p{
+  font-size:13px;
+  color:#666;
+  margin-bottom:4px;
+}
+
+
+/* ===== Mobile View Perfect UI ===== */
+@media (max-width:768px){
+
+  .m-4{
+    margin: 10px !important;
+  }
+
+  .product-card{
+    padding: 10px;
+    border-radius: 18px;
+  }
+
+  .product-img{
+    height:130px;
+    border-radius:14px;
+  }
+
+  .product-card h6{
+    font-size:13px;
+  }
+
+  .product-card p{
+    font-size:12px;
+  }
+
+  .owl-carousel .owl-item{
+    padding: 5px;
+  }
+
+}
+
+</style>
+
+
+<!-- ================= Owl Carousel Script ================= -->
+<script>
+$(document).ready(function(){
+
+  var sliderConfig = {
+    loop: true,
+    margin: 12,
+    nav: false,
+    dots: true,
+    autoplay: true,
+    autoplayTimeout: 3000,
+    responsive: {
+      0: { items: 2 },
+      576: { items: 2 },
+      768: { items: 3 },
+      1000: { items: 5 }
+    }
+  };
+
+  $("#slider1").owlCarousel(sliderConfig);
+  $("#slider2").owlCarousel(sliderConfig);
+
+});
+</script>
+
+{% endblock main_content %}
