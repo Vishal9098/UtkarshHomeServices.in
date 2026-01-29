@@ -29,9 +29,22 @@ urlpatterns = [
     path('order-place/', views.order_place, name='order_place'),
     path('cart/', views.show_cart, name='cart'),
     path('add-to-cart/', views.add_to_cart, name='add_to_cart'),
-    
+    path('orders/', views.orders, name='orders'),
+
+        
     # path('orders/', views.orders, name='orders'), 
-    path('orders/', views.orders, name='orders')
+    path('orders/', views.orders, name='orders'),
+    path('accepted-orders/', views.accepted_orders, name='accepted_orders'),
+    path('cancel-order/<int:order_id>/', views.cancel_order, name='cancel_order'),
+
+    path('', views.ProductView.as_view(), name='home'),
+    path('orders/', views.orders, name='orders'),
+    path('accepted-orders/', views.accepted_orders, name='accepted_orders'),
+    # path('accept-order/<int:order_id>/', views.accept_order, name='accept_order'),
+    path('cancel-order/<int:order_id>/', views.cancel_order, name='cancel_order'),
+    path('accept-order/<int:order_id>/', views.accept_order, name='accept_order'),
+
+
 
 
 

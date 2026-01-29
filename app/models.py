@@ -28,7 +28,6 @@ class Product(models.Model):
     description = models.TextField(blank=True)
     category = models.CharField(choices=CATEGORY_CHOICES, max_length=3)
     product_image = models.ImageField(upload_to='productimg', blank=True, null=True)
-
     is_service = models.BooleanField(default=False)
 
     def __str__(self):
@@ -41,16 +40,15 @@ class ServicePrice(models.Model):
         on_delete=models.CASCADE,
         related_name='prices'
     )
-    option = models.CharField(max_length=100)   # 1 BHK / 3000 Liter / Single Bed
+    option = models.CharField(max_length=100)
     price = models.PositiveIntegerField()
 
     def __str__(self):
         return f"{self.product.title} - {self.option} - ₹{self.price}"
 
-class Cart(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    session_key = models.CharField(max_length=100, null=True, blank=True)
 
+class Cart(models.Model):
+    session_key = models.CharField(max_length=100, null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     service_price = models.ForeignKey(
         ServicePrice,
@@ -58,7 +56,6 @@ class Cart(models.Model):
         null=True,
         blank=True
     )
-
     quantity = models.PositiveIntegerField(default=1)
 
     @property
@@ -72,17 +69,20 @@ class Cart(models.Model):
         return self.unit_price * self.quantity
 
 
-
-
 class OrderPlaced(models.Model):
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('cancelled', 'Cancelled'),
+    )
+
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    service_price = models.ForeignKey(ServicePrice, null=True, blank=True, on_delete=models.SET_NULL)
-
-    quantity = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField(default=1)
     price = models.FloatField()
-    status = models.CharField(max_length=20, default='Pending')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     ordered_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Order {self.id}"
+        return f"Order #{self.id}"
+

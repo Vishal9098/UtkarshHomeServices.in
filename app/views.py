@@ -1,3 +1,87 @@
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views import View
+from .models import Product, Cart, ServicePrice, Customer, OrderPlaced
+from django.contrib import messages
+
+
+class ProductView(View):
+    def get(self, request):
+        products = Product.objects.all()
+        return render(request, 'app/home.html', {'products': products})
+
+
+class ProductDetailView(View):
+    def get(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        return render(request, 'app/productdetail.html', {'product': product})
+
+
+def add_to_cart(request):
+    prod_id = request.GET.get('prod_id')
+    price_id = request.GET.get('price_id')
+
+    if not request.session.session_key:
+        request.session.create()
+
+    product = get_object_or_404(Product, id=prod_id)
+    service_price = None
+
+    if product.is_service:
+        service_price = get_object_or_404(ServicePrice, id=price_id)
+
+    Cart.objects.create(
+        session_key=request.session.session_key,
+        product=product,
+        service_price=service_price
+    )
+    return redirect('cart')
+
+
+def show_cart(request):
+    carts = Cart.objects.filter(session_key=request.session.session_key)
+    amount = sum(c.total_price for c in carts)
+    return render(request, 'app/cart.html', {'carts': carts, 'amount': amount})
+
+
+def order_place(request):
+    carts = Cart.objects.filter(session_key=request.session.session_key)
+
+    customer = Customer.objects.create(
+        name=request.POST.get('name'),
+        mobile=request.POST.get('mobile'),
+        address=request.POST.get('address')
+    )
+
+    for c in carts:
+        OrderPlaced.objects.create(
+            customer=customer,
+            product=c.product,
+            quantity=c.quantity,
+            price=c.total_price
+        )
+        c.delete()
+
+    return redirect('orders')
+
+
+def orders(request):
+    orders = OrderPlaced.objects.filter(status='pending')
+    return render(request, 'app/orders.html', {'order_placed': orders})
+
+
+def accepted_orders(request):
+    orders = OrderPlaced.objects.filter(status='accepted')
+    return render(request, 'app/accepted_orders.html', {'orders': orders})
+
+
+def accept_order(request, order_id):
+    order = get_object_or_404(OrderPlaced, id=order_id)
+    order.status = 'accepted'
+    order.save()
+    return redirect('orders')
+
+
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render,  HttpResponse
 from django.shortcuts import render, redirect
@@ -202,3 +286,91 @@ def orders(request):
 
 
 
+# PENDING ORDERS (MY ORDERS)
+# --------------------
+def orders(request):
+    orders = OrderPlaced.objects.filter(
+        status='pending'
+    ).order_by('-ordered_at')
+
+    return render(request, 'app/orders.html', {
+        'order_placed': orders
+    })
+
+
+# --------------------
+# ACCEPTED ORDERS
+# --------------------
+def accepted_orders(request):
+    orders = OrderPlaced.objects.filter(
+        status='accepted'
+    ).order_by('-ordered_at')
+
+    return render(request, 'app/accepted_orders.html', {
+        'orders': orders
+    })
+
+
+# --------------------
+# ACCEPT ORDER
+# --------------------
+def accept_order(request, order_id):
+    order = get_object_or_404(OrderPlaced, id=order_id)
+    order.status = 'accepted'
+    order.save()
+    return redirect('orders')
+
+
+# --------------------
+# CANCEL ORDER
+# --------------------
+def cancel_order(request, order_id):
+    order = get_object_or_404(OrderPlaced, id=order_id)
+    order.status = 'pending'
+    order.save()
+    return redirect('orders')# PENDING ORDERS (MY ORDERS)
+# --------------------
+def orders(request):
+    orders = OrderPlaced.objects.filter(
+        status='pending'
+    ).order_by('-ordered_at')
+
+    return render(request, 'app/orders.html', {
+        'order_placed': orders
+    })
+
+
+# --------------------
+# ACCEPTED ORDERS
+# --------------------
+def accepted_orders(request):
+    orders = OrderPlaced.objects.filter(
+        status='accepted'
+    ).order_by('-ordered_at')
+
+    return render(request, 'app/accepted_orders.html', {
+        'orders': orders
+    })
+
+
+# --------------------
+# ACCEPT ORDER
+# --------------------
+
+
+
+# --------------------
+# CANCEL ORDER
+# --------------------
+def cancel_order(request, order_id):
+    order = get_object_or_404(OrderPlaced, id=order_id)
+    order.status = 'pending'
+    order.save()
+    return redirect('orders')
+
+
+def cancel_order(request, order_id):
+    order = get_object_or_404(OrderPlaced, id=order_id)
+    order.status = 'pending'
+    order.save()
+    return redirect('orders')
