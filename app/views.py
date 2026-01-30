@@ -2,39 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from .models import Product, Cart, ServicePrice, Customer, OrderPlaced
 from django.contrib import messages
+from .models import Review
 
 
-class ProductView(View):
-    def get(self, request):
-        products = Product.objects.all()
-        return render(request, 'app/home.html', {'products': products})
 
 
-class ProductDetailView(View):
-    def get(self, request, pk):
-        product = get_object_or_404(Product, pk=pk)
-        return render(request, 'app/productdetail.html', {'product': product})
 
-
-def add_to_cart(request):
-    prod_id = request.GET.get('prod_id')
-    price_id = request.GET.get('price_id')
-
-    if not request.session.session_key:
-        request.session.create()
-
-    product = get_object_or_404(Product, id=prod_id)
-    service_price = None
-
-    if product.is_service:
-        service_price = get_object_or_404(ServicePrice, id=price_id)
-
-    Cart.objects.create(
-        session_key=request.session.session_key,
-        product=product,
-        service_price=service_price
-    )
-    return redirect('cart')
 
 
 def show_cart(request):
@@ -64,9 +37,6 @@ def order_place(request):
     return redirect('orders')
 
 
-def orders(request):
-    orders = OrderPlaced.objects.filter(status='pending')
-    return render(request, 'app/orders.html', {'order_placed': orders})
 
 
 def accepted_orders(request):
@@ -123,18 +93,22 @@ class ProductView(View):
 class ProductDetailView(View):
  def get(self, request, pk):
   product = get_object_or_404(Product, pk=pk)
-  item_already_in_cart = False
 
+  item_already_in_cart = False
   if request.session.session_key:
     item_already_in_cart = Cart.objects.filter(
         product=product,
         session_key=request.session.session_key
     ).exists()
 
+  reviews = Review.objects.filter(product=product).order_by('-created_at')
+
   return render(request, 'app/productdetail.html', {
       'product': product,
-      'item_already_in_cart': item_already_in_cart
+      'item_already_in_cart': item_already_in_cart,
+      'reviews': reviews
   })
+
 
 
 def add_to_cart(request):
@@ -276,11 +250,6 @@ def blogs(request):
 
     return render(request, "app/blogs.html", data)
 
-def orders(request):
-    orders = OrderPlaced.objects.all().order_by('-ordered_at')
-    return render(request, 'app/orders.html', {
-        'order_placed': orders
-    })
 
 
 
@@ -387,3 +356,99 @@ def remove_cart(request, id):
     cart = get_object_or_404(Cart, id=id)
     cart.delete()
     return redirect('showcart')  # cart page ka view name
+
+from django.contrib.auth.decorators import login_required
+
+
+
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect
+from .models import Product, Review
+
+@login_required
+def add_review(request, pk):
+    if request.method == "POST":
+        product = get_object_or_404(Product, pk=pk)
+
+        rating = request.POST.get('rating')
+        comment = request.POST.get('comment')
+
+        # ✅ CREATE or UPDATE (NO IntegrityError)
+        Review.objects.update_or_create(
+            product=product,
+            user=request.user,
+            defaults={
+                'rating': rating,
+                'comment': comment
+            }
+        )
+
+    return redirect('product-detail', pk=pk)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

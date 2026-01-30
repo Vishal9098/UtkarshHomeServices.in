@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Services</title>
+</head>
+<body>
+    <h2>Our Services</h2>
+
+    {% for service in services %}
+        <p>{{ service.name }}</p>
+    {% empty %}
+        <p>No services found</p>
+    {% endfor %}
+</body>
+</html>

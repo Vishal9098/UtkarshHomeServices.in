@@ -31,3 +31,10 @@ class CartAdmin(admin.ModelAdmin):
 class OrderPlacedAdmin(admin.ModelAdmin):
     list_display = ('id', 'product', 'price', 'status')
     list_filter = ('status',)
+
+from django.contrib import admin
+from .models import Review
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('product', 'user', 'rating', 'created_at')

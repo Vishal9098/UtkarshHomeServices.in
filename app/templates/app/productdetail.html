@@ -1,5 +1,6 @@
 {% extends 'app/base.html' %}
 {% load static %}
+
 {% block main-content %}
 
 <div class="container my-5">
@@ -8,7 +9,8 @@
     <!-- IMAGE -->
     <div class="col-sm-6 text-center">
       {% if product.product_image %}
-        <img src="{{ product.product_image.url }}" class="img-fluid img-thumbnail">
+        <img src="{{ product.product_image.url }}"
+             class="img-fluid img-thumbnail">
       {% endif %}
     </div>
 
@@ -17,11 +19,11 @@
       <h2>{{ product.title }}</h2>
       <hr>
 
-      <form action="{% url 'add_to_cart' %}" method="get">
+      <!-- ADD TO CART -->
+      <form action="{% url 'add-to-cart' %}" method="get">
         <input type="hidden" name="prod_id" value="{{ product.id }}">
 
         {% if product.is_service %}
-
           <h5 class="mb-3">Select Pricing</h5>
 
           {% for p in product.prices.all %}
@@ -34,16 +36,13 @@
               {{ p.option }} – ₹{{ p.price }}
             </div>
           {% endfor %}
-
         {% else %}
-
           <h4>
             ₹{{ product.discounted_price }}
             <small class="text-decoration-line-through">
-              {{ product.selling_price }}
+              ₹{{ product.selling_price }}
             </small>
           </h4>
-
         {% endif %}
 
         <button class="btn btn-primary mt-3">
@@ -52,9 +51,74 @@
 
         <p class="mt-3">{{ product.description }}</p>
       </form>
-
     </div>
   </div>
+
+  <!-- ===================== REVIEWS SECTION ===================== -->
+
+  <hr class="my-5">
+
+  <h4>Customer Reviews</h4>
+
+  {% for review in reviews %}
+    <div class="border-bottom mb-3 pb-2">
+      <strong>{{ review.user.username }}</strong><br>
+
+      <!-- STARS -->
+      {% for i in "12345" %}
+        {% if forloop.counter <= review.rating %}
+          ⭐
+        {% else %}
+          ☆
+        {% endif %}
+      {% endfor %}
+
+      <p class="mt-2">{{ review.comment }}</p>
+      <small class="text-muted">
+        {{ review.created_at|date:"d M Y" }}
+      </small>
+    </div>
+  {% empty %}
+    <p>No reviews yet.</p>
+  {% endfor %}
+
+  <!-- REVIEW FORM -->
+  {% if user.is_authenticated %}
+  <form method="POST"
+        action="{% url 'add-review' product.id %}"
+        class="mt-4">
+
+    {% csrf_token %}
+
+    <div class="mb-2">
+      <label>Rating</label>
+      <select name="rating" class="form-control" required>
+        <option value="">Select rating</option>
+        <option value="5">★★★★★</option>
+        <option value="4">★★★★</option>
+        <option value="3">★★★</option>
+        <option value="2">★★</option>
+        <option value="1">★</option>
+      </select>
+    </div>
+
+    <div class="mb-2">
+      <textarea name="comment"
+                class="form-control"
+                placeholder="Write your review..."
+                required></textarea>
+    </div>
+
+    <button class="btn btn-success">
+      Submit Review
+    </button>
+  </form>
+  {% else %}
+    <p class="mt-3">
+      <a href="{% url 'login' %}">Login</a> to write a review
+    </p>
+  {% endif %}
+
 </div>
 
 {% endblock %}

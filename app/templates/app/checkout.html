@@ -9,26 +9,36 @@
     <!-- LEFT : ADDRESS FORM -->
     <div class="col-md-7">
       <div class="card checkout-card p-4">
-        <h4 class="mb-4 fw-bold">📍Fill Details </h4>
+        <h4 class="mb-4 fw-bold">📍 Fill Details</h4>
 
-        <!-- 🔥 FIX: action added -->
         <form method="post" action="{% url 'order_place' %}">
           {% csrf_token %}
 
           <div class="mb-3">
             <label class="form-label">Full Name</label>
-            <input type="text" name="name" class="form-control" placeholder="Enter your name" required>
+            <input type="text"
+                   name="name"
+                   class="form-control"
+                   placeholder="Enter your name"
+                   required>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Mobile Number</label>
-            <input type="tel" name="mobile" class="form-control" placeholder="10 digit mobile number" required>
+            <input type="tel"
+                   name="mobile"
+                   class="form-control"
+                   placeholder="10 digit mobile number"
+                   required>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Full Address</label>
-            <textarea name="address" rows="3" class="form-control"
-              placeholder="House no, Street, Area, City, Pincode" required></textarea>
+            <textarea name="address"
+                      rows="3"
+                      class="form-control"
+                      placeholder="House no, Street, Area, City, Pincode"
+                      required></textarea>
           </div>
 
           <button class="btn btn-primary w-100 py-2">
@@ -43,14 +53,13 @@
       <div class="card checkout-summary p-4">
         <h5 class="fw-bold mb-3">🧾 Order Summary</h5>
 
-        <!-- 🔥 FIX: carts instead of cart_items -->
         <div class="d-flex justify-content-between mb-2">
           <span>Total Items</span>
           <span>{{ carts|length }}</span>
         </div>
 
         <div class="d-flex justify-content-between mb-2">
-          <span>Service Charge</span>
+          <span>Amount</span>
           <span>₹{{ totalamount }}</span>
         </div>
 

@@ -44,6 +44,8 @@ urlpatterns = [
     path('cancel-order/<int:order_id>/', views.cancel_order, name='cancel_order'),
     path('accept-order/<int:order_id>/', views.accept_order, name='accept_order'),
     path('remove-cart/<int:id>/', views.remove_cart, name='remove_cart'),
+    path('product/<int:pk>/review/', views.add_review, name='add-review')
+
 
 
 
@@ -69,6 +71,45 @@ urlpatterns = [
 
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
