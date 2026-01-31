@@ -274,6 +274,22 @@ def search(request):
     return render(request, 'app/search.html', {'products': products, 'query': query})
 
 
+def plus_cart(request, cart_id):
+    cart = get_object_or_404(Cart, id=cart_id)
+    cart.quantity += 1
+    cart.save()
+    return redirect('cart')
+
+
+def minus_cart(request, cart_id):
+    cart = get_object_or_404(Cart, id=cart_id)
+    if cart.quantity > 1:
+        cart.quantity -= 1
+        cart.save()
+    return redirect('cart')
+
+
+
 
 
 
