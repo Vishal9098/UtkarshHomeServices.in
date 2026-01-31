@@ -1,116 +1,63 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from .models import Product, Cart, ServicePrice, Customer, OrderPlaced
 from django.contrib import messages
-from .models import Review
-
-
-
-
-
-
-
-def show_cart(request):
-    carts = Cart.objects.filter(session_key=request.session.session_key)
-    amount = sum(c.total_price for c in carts)
-    return render(request, 'app/cart.html', {'carts': carts, 'amount': amount})
-
-
-def order_place(request):
-    carts = Cart.objects.filter(session_key=request.session.session_key)
-
-    customer = Customer.objects.create(
-        name=request.POST.get('name'),
-        mobile=request.POST.get('mobile'),
-        address=request.POST.get('address')
-    )
-
-    for c in carts:
-        OrderPlaced.objects.create(
-            customer=customer,
-            product=c.product,
-            quantity=c.quantity,
-            price=c.total_price
-        )
-        c.delete()
-
-    return redirect('orders')
-
-
-
-
-def accepted_orders(request):
-    orders = OrderPlaced.objects.filter(status='accepted')
-    return render(request, 'app/accepted_orders.html', {'orders': orders})
-
-
-def accept_order(request, order_id):
-    order = get_object_or_404(OrderPlaced, id=order_id)
-    order.status = 'accepted'
-    order.save()
-    return redirect('orders')
-
-
-
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render,  HttpResponse
-from django.shortcuts import render, redirect
-from django.views import View 
-from .models import ServicePrice
-from .models import Customer, Product, Cart, OrderPlaced
-from django.contrib import  messages
-from django.db.models import Q
-from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator    
-from django.shortcuts import render, get_object_or_404
-from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from .models import Product, Cart
-from django.urls import reverse
-from .models import Product, Cart
-from django.contrib.auth import authenticate, login
-# from .forms import LoginForm
-from django.contrib import messages
 
+from .models import (
+    Product,
+    Cart,
+    ServicePrice,
+    Customer,
+    OrderPlaced,
+    Review
+)
 
+# ----------------------------------
+# HOME / PRODUCT LIST
+# ----------------------------------
 class ProductView(View):
- def get(self,request):
-  totalitem = 0
-  topwears = Product.objects.filter(category='TW')
-  bottomwears = Product.objects.filter(category='BW')
-  mobiles = Product.objects.filter(category='M')
-  if request.session.session_key:
-    totalitem = Cart.objects.filter(session_key=request.session.session_key).count()
-  return render(request, 'app/home.html', {
-      'topwears':topwears,
-      'bottomwears':bottomwears,
-      'mobiles':mobiles,
-      'totalitem':totalitem
-  })
+    def get(self, request):
+        totalitem = 0
+        if request.session.session_key:
+            totalitem = Cart.objects.filter(
+                session_key=request.session.session_key
+            ).count()
 
+        return render(request, 'app/home.html', {
+            'topwears': Product.objects.filter(category='TW'),
+            'bottomwears': Product.objects.filter(category='BW'),
+            'mobiles': Product.objects.filter(category='M'),
+            'totalitem': totalitem
+        })
+
+
+# ----------------------------------
+# PRODUCT DETAIL
+# ----------------------------------
 class ProductDetailView(View):
- def get(self, request, pk):
-  product = get_object_or_404(Product, pk=pk)
+    def get(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
 
-  item_already_in_cart = False
-  if request.session.session_key:
-    item_already_in_cart = Cart.objects.filter(
-        product=product,
-        session_key=request.session.session_key
-    ).exists()
+        item_already_in_cart = False
+        if request.session.session_key:
+            item_already_in_cart = Cart.objects.filter(
+                product=product,
+                session_key=request.session.session_key
+            ).exists()
 
-  reviews = Review.objects.filter(product=product).order_by('-created_at')
+        reviews = Review.objects.filter(product=product).order_by('-created_at')
 
-  return render(request, 'app/productdetail.html', {
-      'product': product,
-      'item_already_in_cart': item_already_in_cart,
-      'reviews': reviews
-  })
+        return render(request, 'app/productdetail.html', {
+            'product': product,
+            'item_already_in_cart': item_already_in_cart,
+            'reviews': reviews
+        })
 
 
-
+# ----------------------------------
+# ADD TO CART
+# ----------------------------------
 def add_to_cart(request):
     prod_id = request.GET.get("prod_id")
     price_id = request.GET.get("price_id")
@@ -133,46 +80,43 @@ def add_to_cart(request):
         service_price=service_price
     )
 
-    return redirect("cart")
+    return redirect("showcart")
 
 
+# ----------------------------------
+# SHOW CART  ✅ (NO EXTRA CHARGE)
+# ----------------------------------
 def show_cart(request):
     carts = Cart.objects.filter(session_key=request.session.session_key)
-
-    # ✅ YAHI SAHI LINE HAI
-    amount = sum(c.total_price for c in carts)
-
-    totalamount = amount + 70 if carts else 0
+    totalamount = sum(c.total_price for c in carts)
 
     return render(request, 'app/cart.html', {
         'carts': carts,
-        'amount': amount,
-        'totalamount': totalamount,
+        'totalamount': totalamount
     })
 
 
+# ----------------------------------
+# CHECKOUT  ✅ (SAME TOTAL)
+# ----------------------------------
+def checkout(request):
+    carts = Cart.objects.filter(session_key=request.session.session_key)
+    totalamount = sum(c.total_price for c in carts)
+
+    return render(request, 'app/checkout.html', {
+        'carts': carts,
+        'totalamount': totalamount
+    })
 
 
-def address(request):  
-    totalitem = 0
-    if request.session.session_key:
-        totalitem = Cart.objects.filter(
-            session_key=request.session.session_key
-        ).count()
-
-    add = Customer.objects.all()
-    return render(
-        request,
-        'app/address.html',
-        {'add': add, 'active': 'btn-primary', 'totalitem': totalitem}
-    )
-
-
+# ----------------------------------
+# PLACE ORDER
+# ----------------------------------
 def order_place(request):
     carts = Cart.objects.filter(session_key=request.session.session_key)
 
     if not carts.exists():
-        return redirect('cart')
+        return redirect('showcart')
 
     customer = Customer.objects.create(
         name=request.POST.get('name'),
@@ -185,27 +129,83 @@ def order_place(request):
             customer=customer,
             product=c.product,
             quantity=c.quantity,
-            price=c.total_price   # ✅ FIXED
+            price=c.total_price
         )
         c.delete()
 
     return redirect('orders')
-def checkout(request):
-    carts = Cart.objects.filter(session_key=request.session.session_key)
-    amount = sum(c.total_price for c in carts)
 
-    return render(request, 'app/checkout.html', {
-        'totalamount': amount,
-        'carts': carts
+
+# ----------------------------------
+# REMOVE CART ITEM
+# ----------------------------------
+def remove_cart(request, id):
+    cart = get_object_or_404(Cart, id=id)
+    cart.delete()
+    return redirect('showcart')
+
+
+# ----------------------------------
+# ORDERS
+# ----------------------------------
+def orders(request):
+    orders = OrderPlaced.objects.filter(
+        status='pending'
+    ).order_by('-ordered_at')
+
+    return render(request, 'app/orders.html', {
+        'order_placed': orders
     })
-def search(request):
-    query = request.GET.get('query')
-    products = []
-    if query:
-        products = Product.objects.filter(title__icontains=query)
-    return render(request, 'app/search.html', {'products': products, 'query': query})
+
+
+def accepted_orders(request):
+    orders = OrderPlaced.objects.filter(
+        status='accepted'
+    ).order_by('-ordered_at')
+
+    return render(request, 'app/accepted_orders.html', {
+        'orders': orders
+    })
+
+
+def accept_order(request, order_id):
+    order = get_object_or_404(OrderPlaced, id=order_id)
+    order.status = 'accepted'
+    order.save()
+    return redirect('orders')
+
+
+def cancel_order(request, order_id):
+    order = get_object_or_404(OrderPlaced, id=order_id)
+    order.status = 'pending'
+    order.save()
+    return redirect('orders')
+
+
+# ----------------------------------
+# ADD / UPDATE REVIEW
+# ----------------------------------
+@login_required
+def add_review(request, pk):
+    if request.method == "POST":
+        product = get_object_or_404(Product, pk=pk)
+
+        Review.objects.update_or_create(
+            product=product,
+            user=request.user,
+            defaults={
+                'rating': request.POST.get('rating'),
+                'comment': request.POST.get('comment')
+            }
+        )
+
+    return redirect('product-detail', pk=pk)
+
 def gallery(request):
     return render(request, 'app/gallery.html')
+
+
+
 def blogs(request):
     data = {
         "latest": [
@@ -250,181 +250,28 @@ def blogs(request):
 
     return render(request, "app/blogs.html", data)
 
-
-
-
-
-
-# PENDING ORDERS (MY ORDERS)
-# --------------------
-def orders(request):
-    orders = OrderPlaced.objects.filter(
-        status='pending'
-    ).order_by('-ordered_at')
-
-    return render(request, 'app/orders.html', {
-        'order_placed': orders
-    })
-
-
-# --------------------
-# ACCEPTED ORDERS
-# --------------------
-def accepted_orders(request):
-    orders = OrderPlaced.objects.filter(
-        status='accepted'
-    ).order_by('-ordered_at')
-
-    return render(request, 'app/accepted_orders.html', {
-        'orders': orders
-    })
-
-
-# --------------------
-# ACCEPT ORDER
-# --------------------
-def accept_order(request, order_id):
-    order = get_object_or_404(OrderPlaced, id=order_id)
-    order.status = 'accepted'
-    order.save()
-    return redirect('orders')
-
-
-# --------------------
-# CANCEL ORDER
-# --------------------
-def cancel_order(request, order_id):
-    order = get_object_or_404(OrderPlaced, id=order_id)
-    order.status = 'pending'
-    order.save()
-    return redirect('orders')# PENDING ORDERS (MY ORDERS)
-# --------------------
-def orders(request):
-    orders = OrderPlaced.objects.filter(
-        status='pending'
-    ).order_by('-ordered_at')
-
-    return render(request, 'app/orders.html', {
-        'order_placed': orders
-    })
-
-
-# --------------------
-# ACCEPTED ORDERS
-# --------------------
-def accepted_orders(request):
-    orders = OrderPlaced.objects.filter(
-        status='accepted'
-    ).order_by('-ordered_at')
-
-    return render(request, 'app/accepted_orders.html', {
-        'orders': orders
-    })
-
-
-# --------------------
-# ACCEPT ORDER
-# --------------------
-
-
-
-# --------------------
-# CANCEL ORDER
-# --------------------
-def cancel_order(request, order_id):
-    order = get_object_or_404(OrderPlaced, id=order_id)
-    order.status = 'pending'
-    order.save()
-    return redirect('orders')
-
-
-def cancel_order(request, order_id):
-    order = get_object_or_404(OrderPlaced, id=order_id)
-    order.status = 'pending'
-    order.save()
-    return redirect('orders')
-
-
-from django.shortcuts import redirect, get_object_or_404
-from .models import Cart
-
-
-from django.shortcuts import redirect, get_object_or_404
-from .models import Cart
-
-def remove_cart(request, id):
-    cart = get_object_or_404(Cart, id=id)
-    cart.delete()
-    return redirect('showcart')  # cart page ka view name
-
-from django.contrib.auth.decorators import login_required
-
-
-
-
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect
-from .models import Product, Review
-
-@login_required
-def add_review(request, pk):
-    if request.method == "POST":
-        product = get_object_or_404(Product, pk=pk)
-
-        rating = request.POST.get('rating')
-        comment = request.POST.get('comment')
-
-        # ✅ CREATE or UPDATE (NO IntegrityError)
-        Review.objects.update_or_create(
-            product=product,
-            user=request.user,
-            defaults={
-                'rating': rating,
-                'comment': comment
-            }
-        )
-
-    return redirect('product-detail', pk=pk)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+def address(request):  
+    totalitem = 0
+    if request.session.session_key:
+        totalitem = Cart.objects.filter(
+            session_key=request.session.session_key
+        ).count()
+
+    add = Customer.objects.all()
+    return render(
+        request,
+        'app/address.html',
+        {'add': add, 'active': 'btn-primary', 'totalitem': totalitem}
+    )
+
+
+
+def search(request):
+    query = request.GET.get('query')
+    products = []
+    if query:
+        products = Product.objects.filter(title__icontains=query)
+    return render(request, 'app/search.html', {'products': products, 'query': query})
 
 
 
