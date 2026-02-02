@@ -4,40 +4,66 @@
 {% block main-content %}
 
 <div class="container my-5">
-  <div class="row">
 
-    <!-- IMAGE -->
-    <div class="col-sm-6 text-center">
+  <!-- ================= IMAGE (FULL WIDTH CENTER) ================= -->
+  <div class="row mb-4">
+    <div class="col-12 text-center">
       {% if product.product_image %}
         <img src="{{ product.product_image.url }}"
-             class="img-fluid img-thumbnail">
+             class="img-fluid service-image">
       {% endif %}
     </div>
+  </div>
 
-    <!-- DETAILS -->
-    <div class="col-sm-5 offset-sm-1">
-      <h2>{{ product.title }}</h2>
-      <hr>
+  <!-- ================= CONTENT (IMAGE KE NICHE) ================= -->
+  <div class="row">
+    <div class="col-12 service-content">
 
-      <!-- ADD TO CART -->
+      <!-- TITLE -->
+      <h1 class="service-title">
+        {{ product.title }}
+      </h1>
+
+      <!-- DESCRIPTION -->
+      <div class="service-description">
+        {{ product.description|linebreaks }}
+      </div>
+
+      <!-- EXCLUSIONS -->
+      {% if product.is_service %}
+        <h3 class="section-title">Exclusions</h3>
+        <ul class="exclusions">
+          <li>Chimney cleaning</li>
+          <li>Refrigerator interior</li>
+          <li>Upholstery & sofa shampooing</li>
+          <li>Chandelier cleaning</li>
+          <li>Removal of utensils</li>
+          <li>Wet wiping of wall & ceiling</li>
+        </ul>
+      {% endif %}
+
+      <!-- PRICING + ADD TO CART -->
       <form action="{% url 'add-to-cart' %}" method="get">
         <input type="hidden" name="prod_id" value="{{ product.id }}">
 
         {% if product.is_service %}
-          <h5 class="mb-3">Select Pricing</h5>
+          <h3 class="section-title">Select Pricing</h3>
 
-          {% for p in product.prices.all %}
-            <div class="form-check border p-2 mb-2">
-              <input class="form-check-input"
-                     type="radio"
-                     name="price_id"
-                     value="{{ p.id }}"
-                     required>
-              {{ p.option }} – ₹{{ p.price }}
-            </div>
-          {% endfor %}
+          <div class="pricing-box">
+            {% for p in product.prices.all %}
+              <label class="price-item">
+                <input type="radio"
+                       name="price_id"
+                       value="{{ p.id }}"
+                       required>
+                <span>{{ p.option }}</span>
+                <strong>₹{{ p.price }}</strong>
+              </label>
+            {% endfor %}
+          </div>
+
         {% else %}
-          <h4>
+          <h4 class="mt-3">
             ₹{{ product.discounted_price }}
             <small class="text-decoration-line-through">
               ₹{{ product.selling_price }}
@@ -48,74 +74,75 @@
         <button class="btn btn-primary mt-3">
           Add to Cart
         </button>
-
-        <p class="mt-3">{{ product.description }}</p>
       </form>
+
     </div>
   </div>
 
-  <!-- ===================== REVIEWS SECTION ===================== -->
-
-  <hr class="my-5">
-
-  <h4>Customer Reviews</h4>
-
-  {% for review in reviews %}
-    <div class="border-bottom mb-3 pb-2">
-      <strong>{{ review.user.username }}</strong><br>
-
-      <!-- STARS -->
-      {% for i in "12345" %}
-        {% if forloop.counter <= review.rating %}
-          ⭐
-        {% else %}
-          ☆
-        {% endif %}
-      {% endfor %}
-
-      <p class="mt-2">{{ review.comment }}</p>
-      <small class="text-muted">
-        {{ review.created_at|date:"d M Y" }}
-      </small>
-    </div>
-  {% empty %}
-    <p>No reviews yet.</p>
-  {% endfor %}
-
-  <!-- REVIEW FORM -->
-  {% if user.is_authenticated %}
-  <form method="POST"
-        action="{% url 'add-review' product.id %}"
-        class="mt-4">
-
-    {% csrf_token %}
-
-    <div class="mb-2">
-      <label>Rating</label>
-      <select name="rating" class="form-control" required>
-        <option value="">Select rating</option>
-        <option value="5">★★★★★</option>
-        <option value="4">★★★★</option>
-        <option value="3">★★★</option>
-        <option value="2">★★</option>
-        <option value="1">★</option>
-      </select>
-    </div> 
-
-    <div class="mb-2">
-      <textarea name="comment"
-                class="form-control"
-                placeholder="Write your review..."
-                required></textarea>
-    </div>
-
-    <button class="btn btn-success">
-      Submit Review
-    </button>
-  </form>
-  {% else %}
-  {% endif %}   
-
 </div>
+
+<!-- ================= STYLES ================= -->
+<style>
+  *{
+    font-family:"Times New Roman", Times, serif;
+  }
+
+  .service-image{
+    width:100%;
+    max-width:900px;
+    max-height:420px;
+    object-fit:cover;
+    border-radius:4px;
+  }
+
+  .service-content{
+    max-width:900px;
+    margin:auto;
+  }
+
+  .service-title{
+    font-size:34px;
+    font-weight:bold;
+    margin:20px 0 10px;
+  }
+
+  .service-description{
+    font-size:15px;
+    line-height:1.8;
+    margin-bottom:20px;
+  }
+
+  .section-title{
+    font-size:22px;
+    font-weight:bold;
+    margin-top:30px;
+  }
+
+  .exclusions li{
+    font-size:14px;
+    line-height:1.7;
+  }
+
+  /* 🔥 PRICE SIZE CHHOTA + SAME LOOK */
+  .pricing-box{
+    margin-top:10px;
+  }
+
+  .price-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border:1px solid #ddd;
+    padding:8px 12px;
+    border-radius:4px;
+    margin-bottom:8px;
+    font-size:14px; /* 👈 PRICE SIZE CONTROL */
+    cursor:pointer;
+  }
+
+  .price-item input{
+    margin-right:8px;
+  }
+</style>
 
 {% endblock %}

@@ -7,7 +7,7 @@
   <div class="carousel-inner">
 
     <div class="carousel-item active">
-      <img src="{% static 'app/images/banner/new3.jpg' %}" class="d-block w-100 banner-img">
+      <img src="{% static 'app/images/banner/new2.jpg' %}" class="d-block w-100 banner-img">
     </div>
 
     <div class="carousel-item">
@@ -75,17 +75,42 @@
 <section class="stats-testimonial">
   <div class="container">
     <div class="stats-row">
-      <div class="stat-item"><div class="stat-number">1k+</div><div class="stat-text">Happy Customers</div></div>
+      <div class="stat-item"><div class="stat-number">1M+</div><div class="stat-text">Happy Customers</div></div>
       <div class="stat-item"><div class="stat-number">100%</div><div class="stat-text">Services Guarantee</div></div>
-      <div class="stat-item"><div class="stat-number">4.9+</div><div class="stat-text">Google Rating</div></div>
-      <div class="stat-item"><div class="stat-number">1k+</div><div class="stat-text">Services Completed</div></div>
+      <div class="stat-item"><div class="stat-number">10K+</div><div class="stat-text">Service Partners</div></div>
+      <div class="stat-item"><div class="stat-number">1M+</div><div class="stat-text">Services Completed</div></div>
     </div>
   </div>
 </section>
 
+<section class="why-nakoda">
+  <div class="container">
+    <h2 class="why-title">EXPERIENCES SHARED BY OUR VALUED CUSTOMERS</h2>
+  </div>
+</section>
+
+
 <script defer async src='https://cdn.trustindex.io/loader.js?e8e24e5633cf695fdc66b0e118e'></script>
 
 <style>
+
+/* MOBILE ONLY FIX */
+@media (max-width: 768px) {
+  .section-heading {
+    font-size: 18px;   /* thoda aur chhota */
+    line-height: 1.25;
+    letter-spacing: 0.3px;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-heading {
+    font-size: 16px;
+  }
+}
+
+
+
 
 /* =======================
    GLOBAL RESET
@@ -180,13 +205,15 @@ html,body{
 ======================= */
 @media(max-width:768px){
 
+  /* GRID */
   .product-grid{
     grid-template-columns:repeat(3,1fr);
     gap:12px;
   }
 
+  /* CARD */
   .nakoda-card{
-    height:160px;            /* ✅ FIXED HEIGHT */
+    aspect-ratio:auto;              /* 🔥 VERY IMPORTANT */
     border:none;
     border-radius:22px;
     background:#f2f2f2;
@@ -194,10 +221,9 @@ html,body{
     box-shadow:
       0 8px 18px rgba(0,0,0,0.18),
       0 3px 8px rgba(0,0,0,0.12);
-    display:flex;
-    flex-direction:column;
   }
 
+  /* IMAGE CONTAINER (NAKODA STYLE) */
   .nakoda-img{
     height:90px;
     background:#fff;
@@ -210,6 +236,7 @@ html,body{
     justify-content:center;
   }
 
+  /* IMAGE */
   .nakoda-img img{
     width:100%;
     height:100%;
@@ -217,23 +244,16 @@ html,body{
     border-radius:14px;
   }
 
+  /* TITLE */
   .nakoda-title{
-    height:32px;             /* ✅ FIXED TITLE HEIGHT */
+    height:auto;
     background:transparent;
     color:#333;
     font-size:11px;
     font-weight:600;
-    padding:4px;
-    text-align:center;
-
-    /* 🔥 TEXT CONTROL */
-    display:-webkit-box;
-    -webkit-line-clamp:2;
-    -webkit-box-orient:vertical;
-    overflow:hidden;
+    padding:6px 4px 0;
   }
 }
-
 
 /* =======================
    WHY SECTION

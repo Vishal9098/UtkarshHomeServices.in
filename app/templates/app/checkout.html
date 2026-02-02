@@ -14,6 +14,7 @@
         <form method="post" action="{% url 'order_place' %}">
           {% csrf_token %}
 
+          <!-- NAME -->
           <div class="mb-3">
             <label class="form-label">Full Name</label>
             <input type="text"
@@ -23,6 +24,7 @@
                    required>
           </div>
 
+          <!-- MOBILE -->
           <div class="mb-3">
             <label class="form-label">Mobile Number</label>
             <input type="tel"
@@ -32,6 +34,26 @@
                    required>
           </div>
 
+          <!-- DATE & TIME (NEW) -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Select Date</label>
+              <input type="date"
+                     name="booking_date"
+                     class="form-control"
+                     required>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Select Time</label>
+              <input type="time"
+                     name="booking_time"
+                     class="form-control"
+                     required>
+            </div>
+          </div>
+
+          <!-- ADDRESS -->
           <div class="mb-3">
             <label class="form-label">Full Address</label>
             <textarea name="address"
@@ -41,6 +63,7 @@
                       required></textarea>
           </div>
 
+          <!-- SUBMIT -->
           <button class="btn btn-primary w-100 py-2">
             Booking Now
           </button>

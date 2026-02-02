@@ -27,9 +27,7 @@
                 <div class="col-sm-9">
                   <h5>{{ cart.product.title }}</h5>
 
-                  <p class="mb-2 text-muted small">
-                    {{ cart.product.description }}
-                  </p>
+                  <!-- ❌ DESCRIPTION HATA DI GAYI -->
 
                   <!-- 🔥 QUANTITY BUTTONS -->
                   <div class="d-flex align-items-center my-3">
@@ -117,11 +115,11 @@
     </div>
   </div>
 </div>
-<style>
-  .payment-img {
-    max-width: 250px;   /* size control */
-    height: auto;
-}
 
+<style>
+.payment-img {
+  max-width: 250px;
+  height: auto;
+}
 </style>
 {% endblock main-content %}
