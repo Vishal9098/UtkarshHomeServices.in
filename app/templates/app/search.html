@@ -33,20 +33,36 @@
                                 <div class="card-body text-center">
                                     <h6 class="fw-bold">{{ product.title }}</h6>
 
-                                    <!-- PRICE LOGIC -->
-                                    {% if product.discounted_price %}
-                                        <div class="fw-bold text-primary">
-                                            ₹ {{ product.discounted_price }}
-                                            {% if product.selling_price %}
-                                                <small class="text-muted text-decoration-line-through">
-                                                    {{ product.selling_price }}
-                                                </small>
-                                            {% endif %}
-                                        </div>
+                                    <!-- ✅ PRICE LOGIC (FIXED) -->
+                                    {% if product.is_service %}
+                                        {% if product.prices.all %}
+                                            <div class="fw-bold text-primary">
+                                                Starting from ₹ {{ product.prices.first.price }}
+                                            </div>
+                                        {% else %}
+                                            <div class="fw-bold text-secondary">
+                                                Call for Price
+                                            </div>
+                                        {% endif %}
                                     {% else %}
-                                        <div class="fw-bold text-secondary">
-                                            Call for Price
-                                        </div>
+                                        {% if product.discounted_price %}
+                                            <div class="fw-bold text-primary">
+                                                ₹ {{ product.discounted_price }}
+                                                {% if product.selling_price %}
+                                                    <small class="text-muted text-decoration-line-through">
+                                                        ₹ {{ product.selling_price }}
+                                                    </small>
+                                                {% endif %}
+                                            </div>
+                                        {% elif product.selling_price %}
+                                            <div class="fw-bold text-primary">
+                                                ₹ {{ product.selling_price }}
+                                            </div>
+                                        {% else %}
+                                            <div class="fw-bold text-secondary">
+                                                Call for Price
+                                            </div>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                             </div>
@@ -63,16 +79,15 @@
         </div>
     </div>
 </div>
+
 <style>
-    .product-img {
+.product-img {
     width: 100%;
     height: 220px;
     object-fit: cover;
 }
-
 </style>
 {% endblock main-content %}
-
 
 
 
