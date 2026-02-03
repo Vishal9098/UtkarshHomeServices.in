@@ -8,23 +8,46 @@
     <div class="row">
         <div class="col-sm-3">
             <div class="list-group">
-            
-              
+                <!-- future filters -->
             </div>
         </div>
 
         <div class="col-sm-8 offset-sm-1">
-            <h2>Search Results for "{{ query }}"</h2>
+            <h2 class="mb-4">Search Results for "{{ query }}"</h2>
+
             {% if products %}
                 <div class="row">
                     {% for product in products %}
-                    <div class="col-sm-4 text-center mb-4">
-                        <a href="{% url 'product-detail' product.id %}" class="btn">
-                            <div class="item">
-                                <img src="{{ product.product_image.url }}" alt="{{ product.title }}" height="200">
-                                <div class="fw-bold">{{ product.title }}</div>
-                                <div class="fw-bold">Rs. {{ product.discounted_price }}
-                                    <small class="fw-light text-decoration-line-through">{{ product.selling_price }}</small>
+                    <div class="col-12 col-sm-6 col-md-4 mb-4">
+                        <a href="{% url 'product-detail' product.id %}" class="text-decoration-none text-dark">
+                            <div class="card h-100 shadow-sm">
+
+                                <!-- IMAGE -->
+                                <img 
+                                    src="{{ product.product_image.url }}" 
+                                    alt="{{ product.title }}" 
+                                    class="card-img-top product-img"
+                                >
+
+                                <!-- BODY -->
+                                <div class="card-body text-center">
+                                    <h6 class="fw-bold">{{ product.title }}</h6>
+
+                                    <!-- PRICE LOGIC -->
+                                    {% if product.discounted_price %}
+                                        <div class="fw-bold text-primary">
+                                            ₹ {{ product.discounted_price }}
+                                            {% if product.selling_price %}
+                                                <small class="text-muted text-decoration-line-through">
+                                                    {{ product.selling_price }}
+                                                </small>
+                                            {% endif %}
+                                        </div>
+                                    {% else %}
+                                        <div class="fw-bold text-secondary">
+                                            Call for Price
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </a>
@@ -40,40 +63,15 @@
         </div>
     </div>
 </div>
+<style>
+    .product-img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+</style>
 {% endblock main-content %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
