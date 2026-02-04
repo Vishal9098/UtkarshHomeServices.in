@@ -4,7 +4,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 import requests
-
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_POST
+from .models import Cart
 
 
 from .models import (
@@ -92,11 +94,11 @@ def add_to_cart(request):
 def show_cart(request):
     carts = Cart.objects.filter(session_key=request.session.session_key)
     totalamount = sum(c.total_price for c in carts)
-
     return render(request, 'app/cart.html', {
         'carts': carts,
         'totalamount': totalamount
     })
+
 
 
 # ----------------------------------
@@ -294,19 +296,22 @@ def search(request):
     return render(request, 'app/search.html', {'products': products, 'query': query})
 
 
+@require_POST
 def plus_cart(request, cart_id):
     cart = get_object_or_404(Cart, id=cart_id)
     cart.quantity += 1
     cart.save()
-    return redirect('cart')
+    return redirect('showcart')
 
 
+@require_POST
 def minus_cart(request, cart_id):
     cart = get_object_or_404(Cart, id=cart_id)
     if cart.quantity > 1:
         cart.quantity -= 1
         cart.save()
-    return redirect('cart')
+    return redirect('showcart')
+
 
 from .utils import send_whatsapp_english
 
