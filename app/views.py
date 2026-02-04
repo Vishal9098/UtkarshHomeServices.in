@@ -233,42 +233,66 @@ def blogs(request):
         "latest": [
             {
                 "title": "House Cleaning Services Near Me",
-                "desc": "House Cleaning Services Near Me: 9 Myths People Believe",
-                "date": "2021-10-14"
+                "desc": "Looking for reliable house cleaning services near you? Discover why professional cleaning saves time, improves hygiene, and keeps your home healthy.",
+                "date": "2026-02-01"
             },
             {
-                "title": "Kitchen Cleaning Services",
-                "desc": "Kitchen Cleaning Services: 11 Signs Your Kitchen Needs Deep Cleaning",
-                "date": "2021-09-11"
+                "title": "Kitchen Deep Cleaning Services",
+                "desc": "Kitchen deep cleaning explained: grease removal, appliance cleaning, and hygiene tips every Indian home should know.",
+                "date": "2026-01-25"
+            },
+            {
+                "title": "Bathroom Deep Cleaning Services",
+                "desc": "Why bathroom deep cleaning is essential for preventing germs, stains, and foul smell in Indian households.",
+                "date": "2026-01-18"
             }
         ],
         "sections": [
             {
+                "name": "Home Cleaning",
+                "posts": [
+                    {"title": "7 Benefits of Hiring Professional Home Cleaning Services"},
+                    {"title": "How Often Should You Get Your Home Deep Cleaned?"},
+                    {"title": "DIY Cleaning vs Professional Cleaning: What’s Better?"}
+                ]
+            },
+            {
                 "name": "Office Cleaning",
                 "posts": [
-                    {"title": "Why Smart Businesses Now Prioritize Professional Office Cleaning Services"},
-                    {"title": "How the Urban Service Providers are Changing the Way of Living"},
-                    {"title": "What are the Points to Consider While Hiring Professional Deep Cleaning"}
+                    {"title": "Why Office Deep Cleaning Improves Employee Productivity"},
+                    {"title": "Daily vs Monthly Office Cleaning: What Your Business Needs"},
+                    {"title": "Top Areas Offices Forget to Clean (But Shouldn’t)"}
+                ]
+            },
+            {
+                "name": "Kitchen & Bathroom Cleaning",
+                "posts": [
+                    {"title": "11 Signs Your Kitchen Needs Deep Cleaning"},
+                    {"title": "How Professional Bathroom Cleaning Prevents Infections"},
+                    {"title": "Best Way to Remove Hard Water Stains from Bathrooms"}
+                ]
+            },
+            {
+                "name": "Sofa & Carpet Cleaning",
+                "posts": [
+                    {"title": "Why Sofa Cleaning Is Important for Your Family’s Health"},
+                    {"title": "How Often Should Carpets Be Professionally Cleaned?"},
+                    {"title": "Home Remedies vs Professional Sofa Cleaning"}
                 ]
             },
             {
                 "name": "Pest Control",
                 "posts": [
-                    {"title": "5 Benefits of Hiring a Commercial Pest Control Company"},
-                    {"title": "How long does pest control service last?"},
-                    {"title": "5 ways to keep your children safe from bug bites"}
-                ]
-            },
-            {
-                "name": "Electricians",
-                "posts": [
-                    {"title": "Create an Aesthetic Room with LED Lights"},
-                    {"title": "How to protect home appliances from voltage fluctuation?"},
-                    {"title": "How to Fix Noise Coming from a High Speed Ceiling Fan"}
+                    {"title": "5 Benefits of Hiring Professional Pest Control Services"},
+                    {"title": "Common Household Pests and How to Prevent Them"},
+                    {"title": "Is Pest Control Safe for Children and Pets?"}
                 ]
             }
         ]
     }
+
+    return render(request, "app/blogs.html", data)
+
 
     return render(request, "app/blogs.html", data)
 
