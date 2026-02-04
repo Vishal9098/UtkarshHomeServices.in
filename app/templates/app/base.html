@@ -19,6 +19,140 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
+.main-footer {
+  background: #1c1c1c;
+  color: #cfcfcf;
+  font-family: Arial, sans-serif;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 50px 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 30px;
+}
+
+.footer-logo {
+  width: 140px;
+  margin-bottom: 15px;
+}
+
+.footer-col h4 {
+  color: #ffffff;
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+.footer-col p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-col ul li {
+  font-size: 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.footer-col ul li:hover {
+  color: #00c853; /* Nakoda green touch */
+}
+
+.reply-text {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.footer-bottom {
+  border-top: 1px solid #333;
+  text-align: center;
+  padding: 15px 10px;
+}
+
+.footer-bottom p {
+  margin: 0;
+  font-size: 13px;
+  color: #bdbdbd;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media (max-width: 991px) {
+
+  .navbar-nav .nav-link {
+    font-size: 16px;
+    padding: 10px 0;
+  }
+
+  .navbar-nav {
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+  }
+
+}
+
+
+@media (max-width: 991px) {
+  .navbar-nav {
+    list-style: none;
+    padding-left: 0;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+.services-dropdown{
+  max-height: 320px;
+  overflow-y: auto;
+  width: 280px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+}
+
+.services-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.services-dropdown::-webkit-scrollbar-thumb {
+  background: #bbb;
+  border-radius: 10px;
+}
+
     /* ################################### footer css ###################################### */
 .footer {
   background: #0b0b0b;
@@ -169,88 +303,96 @@ body{font-size:15px;line-height:1.8}
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
+      <!-- LEFT MENU -->
       <ul class="navbar-nav me-auto">
-        <li class="nav-item"><a class="nav-link" href="/">HOME</a></li>
 
-        <!-- ✅ ALL SERVICES FIXED -->
+        <li class="nav-item">
+          <a class="nav-link" href="/">HOME</a>
+        </li>
+
+        <!-- ALL SERVICES -->
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle"
-             href="#"
-             role="button"
-             data-bs-toggle="dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
             ALL SERVICES
           </a>
 
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{% url 'product-detail' 1 %}">Villa Cleaning</a></li>
-            <li><a class="dropdown-item" href="{% url 'product-detail' 3 %}">Furnished Apartment Cleaning</a></li>
-            <li><a class="dropdown-item" href="{% url 'product-detail' 4 %}">Unfurnished Apartment Cleaning</a></li>
-            <li><a class="dropdown-item" href="{% url 'product-detail' 5 %}">Office Deep Cleaning</a></li>
-            <li><a class="dropdown-item" href="{% url 'product-detail' 6 %}">Kitchen Cleaning</a></li>
-            <li><a class="dropdown-item" href="{% url 'product-detail' 8 %}">Sofa Cleaning</a></li>
-            <li><a class="dropdown-item" href="{% url 'product-detail' 7 %}">Carpet Cleaning</a></li>
-            <li><a class="dropdown-item" href="{% url 'product-detail' 2 %}">Bathroom Deep Cleaning</a></li>
-            <li><a class="dropdown-item" href="{% url 'product-detail' 9 %}">Mattress Cleaner</a></li>
-            <li><a class="dropdown-item" href="{% url 'product-detail' 14 %}">AC Cleaning</a></li>
+          <ul class="dropdown-menu services-dropdown">
+            {% for service in all_services %}
+            <li>
+              <a class="dropdown-item" href="{% url 'product-detail' service.id %}">
+                {{ service.title }}
+              </a>
+            </li>
+            {% endfor %}
           </ul>
         </li>
 
-        <li class="nav-item"><a class="nav-link" href="{% url 'gallery' %}">GALLERY</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'blogs' %}">BLOG</a></li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'gallery' %}">GALLERY</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'blogs' %}">BLOG</a>
+        </li>
+
+        <!-- ✅ MOBILE ONLY (BLOG KE NICHE) -->
+        <li class="nav-item d-lg-none">
+          <a class="nav-link fw-bold text-primary" href="{% url 'cart' %}">
+            Cart
+            {% if cart_count > 0 %}
+              <span class="cart-badge">{{ cart_count }}</span>
+            {% endif %}
+          </a>
+        </li>
+
+        <li class="nav-item d-lg-none">
+          <a class="nav-link fw-bold text-primary" href="{% url 'orders' %}">
+            My Orders
+          </a>
+        </li>
+
       </ul>
 
       <!-- DESKTOP SEARCH -->
-       <form class="d-none d-lg-flex me-3" method="get" action="{% url 'search' %}">
+      <form class="d-none d-lg-flex me-3" method="get" action="{% url 'search' %}">
         <input class="form-control me-2" type="search" name="query" placeholder="Search services" required>
         <button type="submit" class="btn btn-primary">Search</button>
-       </form>
-
-       <ul class="navbar-nav align-items-center">
-
-  <li class="nav-item">
-    <a class="nav-link cart-link" href="{% url 'cart' %}">
-      Cart
-      {% if cart_count > 0 %}
-        <span class="cart-badge">{{ cart_count }}</span>
-      {% endif %}
-    </a>
-  </li>
-
-  <li class="nav-item">
-    <a class="nav-link" href="{% url 'orders' %}">My Orders</a>
-  </li>
-
-</ul>
-
-
-
-
-
-      <!-- <ul class="navbar-nav">
-        <li class="nav-item"><a class="nav-link" href="{% url 'orders' %}">My Orders</a></li>
-      </ul> -->
-       <!-- 🔥 YAHI MOBILE SEARCH ADD KARO (JUST HERE) -->
-    <div class="d-lg-none px-3 pb-3">
-      <form method="get" action="{% url 'search' %}">
-        <div class="input-group">
-          <input
-            type="search"
-            name="query"
-            class="form-control"
-            placeholder="Search services"
-            required
-          >
-          <button type="submit" class="btn btn-primary">
-            <i class="fas fa-search"></i>
-          </button>
-        </div>
       </form>
-    </div>
-    <!-- 🔥 MOBILE SEARCH END -->
+
+      <!-- DESKTOP CART / ORDERS -->
+      <ul class="navbar-nav d-none d-lg-flex align-items-center">
+
+        <li class="nav-item">
+          <a class="nav-link cart-link" href="{% url 'cart' %}">
+            Cart
+            {% if cart_count > 0 %}
+              <span class="cart-badge">{{ cart_count }}</span>
+            {% endif %}
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'orders' %}">My Orders</a>
+        </li>
+
+      </ul>
+
+      <!-- MOBILE SEARCH -->
+      <div class="d-lg-none px-3 pb-3">
+        <form method="get" action="{% url 'search' %}">
+          <div class="input-group">
+            <input type="search" name="query" class="form-control" placeholder="Search services">
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </form>
+      </div>
 
     </div>
   </div>
 </nav>
+
 
 <!-- ✅ BANNER BLOCK (ISKE BINA BANNER NAHI AATA) -->
 {% block banner_slider %}{% endblock banner_slider %}
@@ -259,125 +401,80 @@ body{font-size:15px;line-height:1.8}
 <!-- MAIN CONTENT -->
 {% block main-content %}{% endblock main-content %}
 <!-- ================= FOOTER ================= -->
-  <footer class="footer">
+<footer class="main-footer">
   <div class="footer-container">
-    <!-- Logo & Description -->
+
+    <!-- Logo & About -->
     <div class="footer-col logo-col">
-        <img src="{% static 'app/images/banner/logo.jpg' %}" alt="Utkarsh Home Services" class="footer-logo">
-        <p>Utkarsh Home Services is a leading Home and Office Services Platform of India.</p>
+      <img src="{% static 'app/images/banner/logo.jpg' %}" alt="Utkarsh Home Services" class="footer-logo">
+      <p>
+        Utkarsh Home Services is a leading Home and Office Services Platform in India,
+        providing reliable and professional cleaning solutions.
+      </p>
     </div>
-    <!-- Our Services Column 1 -->
+
+    <!-- Services Col 1 -->
     <div class="footer-col">
-      <h4>OUR SERVICES</h4>
+      <h4>Our Services</h4>
       <ul>
-        <li>Villa Cleaning</li>
-        <li>Mattress Cleaner</li>
-        <li>Bathroom Deep Cleaning</li>
-        <li>Air Conditioner Cleaning</li>
+        <li>Exhaust Fan Cleaning</li>
+        <li>Overhead Water Tank Cleaning</li>
+        <li>AC Service</li>
         <li>Water Tank Cleaning Service</li>
-        <li>Office Deep Cleaning</li>
-        <li>Sofa Cleaning</li>
-        <li>House Cleaning</li>
-        <li>Chimney Cleaning</li>
-        <li>Refrigerator Cleaning</li>
-        <li>Carpet Cleaning</li>
-        <li>Kitchen Cleaning</li>
         <li>Microwave Cleaning</li>
+        <li>Refrigerator Cleaning</li>
+        <li>Chimney Cleaning</li>
+        <li>Mattress Cleaning</li>
       </ul>
     </div>
 
-    <!-- Our Services Column 2 -->
+    <!-- Services Col 2 -->
     <div class="footer-col">
       <h4>&nbsp;</h4>
       <ul>
-        <li>Full Home Cleaning</li>
-        <li>Carpet & Mattress Cleaning</li>
-        <li>Home Painting Services</li>
-        <li>Plumber</li>
-        <li>Washing Machine Repair Near Me</li>
-        <li>Photography</li>
-        <li>Full Body Services</li>
-        <li>Mani-pedi</li>
-        <li>Makeup Services</li>
-        <li>Rental Taxis</li>
-        <li>Water Tank Cleaning</li>
+        <li>Carpet Cleaning</li>
+        <li>Sofa Cleaning</li>
+        <li>Kitchen Cleaning</li>
+        <li>Office Deep Cleaning</li>
+        <li>Unfurnished Apartment Cleaning</li>
+        <li>Furnished Apartment Cleaning</li>
+        <li>Bathroom Deep Cleaning</li>
+        <li>Villa Cleaning</li>
       </ul>
     </div>
 
-    <!-- Our Services Column 3 -->
-    <div class="footer-col">
-      <h4>&nbsp;</h4>
-      <ul>
-        <li>Commercial Space Cleaning</li>
-        <li>Chair Cleaning</li>
-        <li>Cleaning Services</li>
-        <li>Electrician</li>
-        <li>Fridge Repair Near Me</li>
-        <li>CCTV & Smart locks</li>
-        <li>Hair Studio</li>
-        <li>Female Spa Services</li>
-        <li>Facial & Clean-up</li>
-        <li>Annual Contract Plans</li>
-        <li>Sanitization Service</li>
-      </ul>
-    </div>
-
-    <!-- Our Services Column 4 -->
-    <div class="footer-col">
-      <h4>&nbsp;</h4>
-      <ul>
-        <li>Kitchen Deep Cleaning</li>
-        <li>Glass Cleaning</li>
-        <li>Pest Control</li>
-        <li>AC Service Repair</li>
-        <li>RO Water Purifier Service Near Me</li>
-        <li>Female Home Salon</li>
-        <li>De-tan Bleach Scrub Services</li>
-        <li>Pre Bridal Packages</li>
-        <li>Waxing</li>
-        <li class="highlight">Elderly Home Service Plans</li>
-      </ul>
-    </div>
-
-        <!-- Quick Links -->
+    <!-- Quick Links -->
     <div class="footer-col">
       <h4>Quick Links</h4>
       <ul>
         <li>About Us</li>
         <li>Contact Us</li>
         <li>Blog</li>
-        <li>Faq</li>
+        <li>FAQ</li>
         <li>Privacy Policy</li>
         <li>Terms & Conditions</li>
       </ul>
     </div>
-      <!-- Contact Info -->
+
+    <!-- Contact Info -->
     <div class="footer-col">
       <h4>Contact Info</h4>
-      <p>Bhopal , madhya pradesh</p>
-      <p>+91-7806061048</p>
-      <p>support@utkarshcleaninghomeservices@gmail.com</p>
-      <p>utkarshcleaninghomeservices@gmail.com</p>
-      <p>We reply within 1 work day</p>
+      <p>Bhopal, Madhya Pradesh</p>
+      <p>📞 +91-7806061048</p>
+      <p>📧 support@utkarshcleaninghomeservices@gmail.com</p>
+      <p>📧 utkarshcleaninghomeservices@gmail.com</p>
+      <p class="reply-text">We reply within 1 working day</p>
     </div>
 
+  </div>
 
-     <!-- Working Hours      -->  --
-
-    <div class="working-hours">
-      <h3>Working Hours</h3>
-      <p>Timing 9:00 AM - 9:00 PM</p>
-      <p>Monday To Sunday</p>
-    <div class="social-icons">
-      <a href="#"><i class="fab fa-facebook-f"></i></a>
-      <a href="#"><i class="fab fa-linkedin-in"></i></a>
-      <a href="#"><i class="fab fa-instagram"></i></a>
-    </div>
-    </div>
+  <!-- Footer Bottom -->
   <div class="footer-bottom">
-    <p>Copyright 2026 © All Rights Reserved By WebCraft Agency Services</p>
+    <p>Copyright © 2026 All Rights Reserved By WebCraft Agency Services</p>
   </div>
 </footer>
+
+
 
 <!-- JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -450,4 +547,5 @@ document.querySelectorAll('.dropdown-item').forEach(item=>{
 
 </body>
 </html>
+
 

@@ -26,8 +26,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app',
     'shop', 
+    'app.apps.AppConfig',
 ]
 
 # ----------------------
@@ -61,6 +61,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'app.context_processors.cart_count',
+                 'app.context_processors.all_services',   # 🔥 YE LINE MISS THI
             ],
         },
     },
@@ -120,6 +121,14 @@ SESSION_ENGINE = "django.contrib.sessions.backends.db"
 # Default primary key field type
 # ----------------------
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# -------------------------------
+# WhatsApp Cloud API Configuration
+# -------------------------------
+
+WHATSAPP_TOKEN = "EAAQ608ROhyoBQgx11KRXNEF6XNJRZASx0A9ZCQFiCZBgg80FH5O09QOWpzN7ZCNQL9pmr2jRld4qZBVMGnW16wsuqgj557ZBsRFr4ZAmuwfIJjyhMngCwDDNc9t9gZCm9d4pkDcSY4NihRDSEFwfDa5xttrNvWSyI0Yo2ZBXEWq4AkYBZC2v65ShMB372l2Jr2rVocUF0a2ZAjH48YFCdxNpSZCQntpo5Ocyx0ZB7VcaXcqjiFN3s7XZBcb65XzLTZAIYqkgGsVYicgpuxh8iYeyiXndMXfeAZDZD"
+WHATSAPP_PHONE_NUMBER_ID = "964093766788925"
 
 
 

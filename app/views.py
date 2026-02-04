@@ -3,6 +3,9 @@ from django.views import View
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+import requests
+
+
 
 from .models import (
     Product,
@@ -168,11 +171,28 @@ def accepted_orders(request):
     })
 
 
+from .utils import send_whatsapp_message
+
+
 def accept_order(request, order_id):
     order = get_object_or_404(OrderPlaced, id=order_id)
-    order.status = 'accepted'
-    order.save()
+
+    if order.status != 'accepted':
+        order.status = 'accepted'
+        order.save()
+
+        # ✅ WhatsApp message yahin se jayega
+        send_whatsapp_message(order)
+
+        messages.success(
+            request,
+            "Order accepted & WhatsApp message sent successfully"
+        )
+
     return redirect('orders')
+
+
+
 
 
 def cancel_order(request, order_id):
@@ -287,6 +307,31 @@ def minus_cart(request, cart_id):
         cart.quantity -= 1
         cart.save()
     return redirect('cart')
+
+from .utils import send_whatsapp_english
+
+def accept_order(request, order_id):
+    order = get_object_or_404(OrderPlaced, id=order_id)
+
+    if order.status != 'accepted':
+        order.status = 'accepted'
+        order.save()
+
+        send_whatsapp_english(order)
+
+        messages.success(
+            request,
+            "Order accepted & WhatsApp message sent (English)"
+        )
+
+    return redirect('orders')
+
+
+
+
+
+
+
 
 
 
