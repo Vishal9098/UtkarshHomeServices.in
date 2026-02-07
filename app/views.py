@@ -6,6 +6,9 @@ from django.utils.decorators import method_decorator
 import requests
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.http import require_POST
+
+
+
 from .models import Cart
 
 
@@ -337,23 +340,58 @@ def minus_cart(request, cart_id):
     return redirect('showcart')
 
 
-from .utils import send_whatsapp_english
+
+
+from .utils import send_whatsapp_message
 
 def accept_order(request, order_id):
     order = get_object_or_404(OrderPlaced, id=order_id)
 
     if order.status != 'accepted':
         order.status = 'accepted'
-        order.save()
+        order.save(update_fields=['status'])
 
-        send_whatsapp_english(order)
+        send_whatsapp_message(order)
 
         messages.success(
             request,
-            "Order accepted & WhatsApp message sent (English)"
+            "Order accepted & WhatsApp message sent"
         )
 
     return redirect('orders')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
