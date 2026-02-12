@@ -15,14 +15,23 @@
 
   <!-- Custom CSS -->
   <link rel="stylesheet" href="{% static 'app/css/style.css' %}">
-  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+
+
+
+
 
 <style>
+
+/* FORCE ARIAL FONT EVERYWHERE */
+html, body {
+  font-family: "Libre Baskerville", serif;
+}
+
 .main-footer {
   background: #1c1c1c;
   color: #cfcfcf;
-  font-family: Arial, sans-serif;
 }
 
 .footer-container {
@@ -158,7 +167,7 @@
   background: #0b0b0b;
   color: #ffffff;
   padding: 40px 20px 0;
-  font-family: Arial, sans-serif;
+
 }
 
 .footer-container {
@@ -222,8 +231,6 @@
 }
 
 /* #################### end footer css ########################### */
-*{font-family:"Libre Baskerville",serif;}
-body{font-size:15px;line-height:1.8}
 
 /* TOP BAR */
 .top-bar{background:#0b5ed7;color:#fff}
