@@ -18,15 +18,50 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
 
-
-
-
-
 <style>
 
 /* FORCE ARIAL FONT EVERYWHERE */
 html, body {
   font-family: "Libre Baskerville", serif;
+}
+
+/* ================= SLIDER STYLES ================= */
+.banner-img {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+}
+
+/* Mobile Responsive Slider */
+@media (max-width: 768px) {
+  .banner-img {
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  /* Carousel controls mobile adjustment */
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 8%;
+  }
+  
+  .carousel-indicators {
+    margin-bottom: 0.5rem;
+  }
+  
+  .carousel-indicators button {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin: 0 4px;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .banner-img {
+    height: 150px;
+  }
 }
 
 .main-footer {
@@ -93,27 +128,6 @@ html, body {
   color: #bdbdbd;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @media (max-width: 991px) {
 
   .navbar-nav .nav-link {
@@ -128,23 +142,12 @@ html, body {
 
 }
 
-
 @media (max-width: 991px) {
   .navbar-nav {
     list-style: none;
     padding-left: 0;
   }
 }
-
-
-
-
-
-
-
-
-
-
 
 .services-dropdown{
   max-height: 320px;
@@ -257,9 +260,6 @@ html, body {
   }
 }
 
-
-
-
 .cart-link {
   position: relative;
   padding-right: 22px;
@@ -281,13 +281,6 @@ html, body {
   justify-content: center;
   box-shadow: 0 2px 6px rgba(0,0,0,0.25);
 }
-
-
-
-
-
-
-
 
 </style>
 </head>
@@ -409,11 +402,14 @@ html, body {
 
 
 <!-- ✅ BANNER BLOCK (ISKE BINA BANNER NAHI AATA) -->
-{% block banner_slider %}{% endblock banner_slider %}
+{% block banner_slider %}
+<!-- Slider will be injected here from child templates -->
+{% endblock banner_slider %}
 {% block livesale %}{% endblock livesale %}
 
 <!-- MAIN CONTENT -->
 {% block main-content %}{% endblock main-content %}
+
 <!-- ================= FOOTER ================= -->
 <footer class="main-footer">
   <div class="footer-container">
@@ -488,8 +484,6 @@ html, body {
   </div>
 </footer>
 
-
-
 <!-- JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -561,4 +555,3 @@ document.querySelectorAll('.dropdown-item').forEach(item=>{
 
 </body>
 </html>
-
