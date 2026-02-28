@@ -43,7 +43,7 @@
       <!-- ================= ADD TO CART ================= -->
       <form action="{% url 'add-to-cart' %}" method="get">
         <input type="hidden" name="prod_id" value="{{ product.id }}">
-        <input type="hidden" name="quantity" value="1">  <!-- Quantity fixed to 1 -->
+        <input type="hidden" name="quantity" value="1">
 
         {% if product.is_service %}
           <h3 class="section-title">Select Pricing</h3>
@@ -69,18 +69,62 @@
           </h4>
         {% endif %}
 
-        <!-- 🔥 ONLY ADD TO CART BUTTON -->
         <div class="mt-3">
           <button class="btn btn-primary">
             Add to Cart
           </button>
         </div>
-
       </form>
 
     </div>
   </div>
 </div>
+
+<!-- ================= RELATED SERVICES ================= -->
+
+{% if related_products %}
+<div class="container my-5">
+  <h2 class="text-center mb-4">Related Services</h2>
+
+  <div class="row">
+
+    {% for p in related_products %}
+    <div class="col-md-4 mb-4">
+      <div class="card shadow-sm h-100">
+        <img src="{{ p.product_image.url }}"
+             class="card-img-top"
+             style="height:220px; object-fit:cover;">
+
+        <div class="card-body text-center">
+          <h5>{{ p.title }}</h5>
+
+          {% if p.is_service %}
+              {% with p.prices.first as first_price %}
+                {% if first_price %}
+                  <p class="fw-bold">
+                    Starting From ₹{{ first_price.price }}
+                  </p>
+                {% endif %}
+              {% endwith %}
+          {% else %}
+              <p class="fw-bold">
+                ₹{{ p.discounted_price }}
+              </p>
+          {% endif %}
+
+          <a href="{% url 'product-detail' p.id %}"
+             class="btn btn-primary">
+            Book Now
+          </a>
+
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+  </div>
+</div>
+{% endif %}
 
 <!-- ================= STYLES ================= -->
 <style>
@@ -124,7 +168,6 @@
   line-height:1.7;
 }
 
-/* PRICE BOX */
 .pricing-box{
   margin-top:10px;
 }

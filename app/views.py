@@ -43,6 +43,9 @@ class ProductView(View):
 # ----------------------------------
 # PRODUCT DETAIL
 # ----------------------------------
+# ----------------------------------
+# PRODUCT DETAIL
+# ----------------------------------
 class ProductDetailView(View):
     def get(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
@@ -56,12 +59,17 @@ class ProductDetailView(View):
 
         reviews = Review.objects.filter(product=product).order_by('-created_at')
 
+        # ✅ RELATED PRODUCTS (Same Category)
+        related_products = Product.objects.filter(
+            category=product.category
+        ).exclude(id=product.id)[:3]
+
         return render(request, 'app/productdetail.html', {
             'product': product,
             'item_already_in_cart': item_already_in_cart,
-            'reviews': reviews
+            'reviews': reviews,
+            'related_products': related_products   # 🔥 IMPORTANT
         })
-
 
 # ----------------------------------
 # ADD TO CART
@@ -97,9 +105,23 @@ def add_to_cart(request):
 def show_cart(request):
     carts = Cart.objects.filter(session_key=request.session.session_key)
     totalamount = sum(c.total_price for c in carts)
+
+    related_products = Product.objects.none()
+
+    if carts.exists():
+        # Cart ke first product ki category lo
+        first_product = carts.first().product
+
+        related_products = Product.objects.filter(
+            category=first_product.category
+        ).exclude(
+            id__in=[c.product.id for c in carts]
+        )[:8]
+
     return render(request, 'app/cart.html', {
         'carts': carts,
-        'totalamount': totalamount
+        'totalamount': totalamount,
+        'related_products': related_products
     })
 
 
