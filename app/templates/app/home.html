@@ -144,9 +144,6 @@
   }
 }
 
-
-
-
 /* =======================
    GLOBAL RESET
 ======================= */
@@ -162,7 +159,7 @@ html,body{
 }
 
 /* =======================
-   BANNER
+   BANNER SLIDER - FIXED RESPONSIVE
 ======================= */
 .banner-img{
   width:100%;
@@ -170,12 +167,26 @@ html,body{
   object-fit:cover;
   display:block;
 }
+
+/* Mobile ke liye special rules */
 @media(max-width:768px){
   .banner-img{
-    height:auto;
-    max-height:100vh;
-    object-fit:contain;
+    height:200px;        /* Mobile par chhoti height */
+    object-fit:cover;    /* Image crop hogi lekin aspect ratio maintain rahega */
   }
+}
+
+/* Chhoti mobile screens ke liye */
+@media(max-width:480px){
+  .banner-img{
+    height:150px;        /* Aur chhoti height */
+  }
+}
+
+/* Carousel container ko bhi properly adjust karo */
+#carouselExampleControls{
+  width:100%;
+  overflow:hidden;
 }
 
 /* =======================
@@ -354,9 +365,7 @@ html,body{
   max-width:100%;
 }
 
-
-
-j.why-nakoda p {
+.why-nakoda p {
   word-break: normal;
   white-space: normal;
 }
